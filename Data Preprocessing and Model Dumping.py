@@ -25,6 +25,22 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 import joblib
-
-%matplotlib inline
 warnings.filterwarnings('ignore')
+
+#data_loading
+data = pd.read_csv('Dataset\CHD_Dataset.csv')
+data.drop(['education'], axis=1, inplace=True)
+data.dropna(axis=0, inplace=True)
+data.shape
+
+#define the features
+x = data.iloc[:,:-1].values
+y = data.iloc[:,-1].values
+
+forest = RandomForestClassifier(n_estimators=1000, n_jobs= 1, class_weight='balanced')
+
+#define Boruta feature selection
+feat_selector = BorutaPy(forest, n_estimators= 'auto', verbose=2)
+
+#find all relevant features
+feat_selector.fit(x,y)
